@@ -135,4 +135,4 @@ On setup or test failure, the suite attaches a browser screenshot when a WebDriv
 
 ## License / Provenance
 
-No explicit license file is currently present in the repository. Reuse terms are therefore unspecified unless the repository owner adds a license.
+The repository includes an MIT LICENSE for the original test code and PROVENANCE.md describing the educational origin of the scenarios and the boundary with the external application. The MIT License applies only to original test code in this repository and does not grant rights to the external application or third-party assets.
