@@ -24,6 +24,8 @@ An end-to-end UI test suite for the educational [Stellar Burgers](https://stella
 
 The suite contains 8 logical scenarios. Each scenario is parameterized for Google Chrome and Mozilla Firefox, producing 16 collected test cases.
 
+Five additional offline regressions check exact order-number matching and rejection of unrelated counter increases. Run them with `python -m pytest tests/test_assertion_guards.py -v`.
+
 ### Constructor and navigation
 
 - navigation from the order feed to the constructor;
@@ -86,7 +88,7 @@ Activate the virtual environment using the command appropriate for your operatin
 | --- | --- | --- |
 | `STELLAR_BURGERS_URL` | `https://stellarburgers.education-services.ru` | Web application URL |
 | `STELLAR_BURGERS_API_URL` | value of `STELLAR_BURGERS_URL` | API base URL |
-| `SELENIUM_TIMEOUT` | `15` | Default request timeout in seconds |
+| `SELENIUM_TIMEOUT` | `15` | API request timeout in seconds (Page Object waits default to 10 seconds) |
 | `ORDER_TIMEOUT` | `180` | Maximum wait for order creation and display in seconds |
 
 Example:
@@ -123,13 +125,17 @@ On setup or test failure, the suite attaches a browser screenshot when a WebDriv
 ## CI
 
 - `.github/workflows/ci.yml` runs the constructor scenarios in Chrome and Firefox for pull requests, pushes to `main`, and manual dispatch; Allure results are uploaded per browser.
-- `.github/workflows/e2e.yml` runs the full suite in both browsers manually and every Monday at 03:00 UTC; Allure results are uploaded per browser.
+- `.github/workflows/ci.yml` also runs the five offline assertion regressions.
+- `.github/workflows/e2e.yml` runs the full browser suite on pull requests, manually and every Monday at 03:00 UTC; Allure results are uploaded per browser.
+
+The [2026-11-02 scheduled run](https://github.com/Nellie-ai/stellar-burgers-ui-tests/actions/runs/41429085843) failed: Chrome 7 passed / 1 failed; Firefox 4 passed / 2 failed / 2 setup errors. This is not a claim of a green E2E suite. Diagnosis and local verification are recorded in [the incident note](docs/ci-investigation-2026-11-03.md).
 
 ## Notes / Limitations
 
 - The tests depend on the availability and behavior of the public educational web application and API.
 - Order-feed scenarios create real orders, so global order counters change on the test stand.
 - Counter checks can take up to three minutes; parallel execution of feed scenarios is not recommended because they share global counters.
+- Counter tests require the exact UI-created order number in the “Ready” section before checking growth. This prevents an unrelated increment alone from passing. The shared counters still cannot prove that this order caused the increment or detect a double increment. The stand only displays five recent completed orders; high traffic can cause a missed observation. The today counter can reset at the stand's day boundary.
 - Browsers run in headless mode in the test fixtures.
 - `allure_results/` is generated locally or in CI and is not tracked by Git.
 

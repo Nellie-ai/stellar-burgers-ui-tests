@@ -39,7 +39,8 @@ class MainPage(BasePage):
 
     @allure.step("Открыть детали ингредиента")
     def open_ingredient_details(self):
-        self.click(MainPageLocators.FIRST_INGREDIENT)
+        self.scroll_to(self.visible(MainPageLocators.INGREDIENT))
+        self.click(MainPageLocators.INGREDIENT)
         self.visible(MainPageLocators.INGREDIENT_MODAL_TITLE)
 
     @allure.step("Проверить ингредиент в модальном окне")
@@ -47,7 +48,9 @@ class MainPage(BasePage):
         if not self.is_visible(MainPageLocators.INGREDIENT_MODAL_TITLE):
             return False
 
-        return ingredient_name in self.text(MainPageLocators.INGREDIENT_MODAL)
+        return self.wait_for_condition(
+            lambda: self.text(MainPageLocators.INGREDIENT_MODAL_NAME) == ingredient_name
+        )
 
     @allure.step("Закрыть детали ингредиента")
     def close_ingredient_details(self):
@@ -58,11 +61,11 @@ class MainPage(BasePage):
     def ingredient_details_are_closed(self):
         return not self.is_visible(MainPageLocators.INGREDIENT_MODAL)
 
-    @allure.step("Получить счётчик первого ингредиента")
+    @allure.step("Получить счётчик выбранной булки")
     def ingredient_counter(self):
         try:
             text = self.text(
-                MainPageLocators.FIRST_INGREDIENT_COUNTER,
+                MainPageLocators.INGREDIENT_COUNTER,
                 timeout=1,
             )
         except TimeoutException:
@@ -74,7 +77,7 @@ class MainPage(BasePage):
     @allure.step("Добавить ингредиент в конструктор")
     def add_ingredient(self):
         before = self.ingredient_counter()
-        source = self.present(MainPageLocators.FIRST_INGREDIENT)
+        source = self.present(MainPageLocators.INGREDIENT)
         target = self.present(MainPageLocators.CONSTRUCTOR_DROP_AREA)
 
         self.drag_and_drop(source, target)

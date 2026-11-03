@@ -7,9 +7,10 @@ class MainPageLocators:
         "//h1[normalize-space()='Соберите бургер']",
     )
 
-    FIRST_INGREDIENT = (
-        By.CSS_SELECTOR,
-        "a[class*='BurgerIngredient_ingredient']",
+    INGREDIENT = (
+        By.XPATH,
+        "//a[contains(@class, 'BurgerIngredient_ingredient')]"
+        "[.//p[normalize-space()='Флюоресцентная булка R2-D3']]",
     )
 
     INGREDIENT_MODAL_TITLE = (
@@ -22,14 +23,19 @@ class MainPageLocators:
         "div[class*='Modal_modal__contentBox']",
     )
 
+    INGREDIENT_MODAL_NAME = (
+        By.CSS_SELECTOR,
+        "div[class*='Modal_modal__contentBox'] p.text_type_main-medium",
+    )
+
     INGREDIENT_MODAL_CLOSE_BUTTON = (
         By.CSS_SELECTOR,
         "button[class*='Modal_modal__close']",
     )
 
-    FIRST_INGREDIENT_COUNTER = (
-        By.CSS_SELECTOR,
-        "a[class*='BurgerIngredient_ingredient'] [class*='counter_counter__num']",
+    INGREDIENT_COUNTER = (
+        By.XPATH,
+        INGREDIENT[1] + "//*[contains(@class, 'counter_counter__num')]",
     )
 
     CONSTRUCTOR_DROP_AREA = (

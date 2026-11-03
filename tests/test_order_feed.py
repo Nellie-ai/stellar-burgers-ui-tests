@@ -15,10 +15,11 @@ class TestOrderFeed:
 
         main_page = MainPage(authorized_driver)
         main_page.go_to_constructor()
-        main_page.create_order()
+        order_number = main_page.create_order()
         main_page.close_order_modal()
         main_page.go_to_order_feed()
 
+        assert feed_page.wait_for_order_completed(order_number)
         after = feed_page.wait_for_total_orders_increase(before)
 
         assert after > before
@@ -31,10 +32,11 @@ class TestOrderFeed:
 
         main_page = MainPage(authorized_driver)
         main_page.go_to_constructor()
-        main_page.create_order()
+        order_number = main_page.create_order()
         main_page.close_order_modal()
         main_page.go_to_order_feed()
 
+        assert feed_page.wait_for_order_completed(order_number)
         after = feed_page.wait_for_today_orders_increase(before)
 
         assert after > before
