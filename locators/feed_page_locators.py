@@ -26,3 +26,8 @@ class FeedPageLocators:
         By.CSS_SELECTOR,
         "ul[class*='OrderFeed_orderListReady']",
     )
+
+    COMPLETED_SECTION = (
+        By.CSS_SELECTOR,
+        "ul[class*='OrderFeed_orderList']:not([class*='OrderFeed_orderListReady'])",
+    )

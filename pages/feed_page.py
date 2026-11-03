@@ -68,19 +68,32 @@ class FeedPage(BasePage):
             poll_frequency=1,
         )
 
-    def _order_is_in_progress(self, order_number):
-        section_text = self.text(FeedPageLocators.IN_PROGRESS_SECTION)
+    def _section_contains_order(self, locator, order_number):
+        section_text = self.text(locator)
         found_numbers = re.findall(r"\d+", section_text)
         normalized_numbers = {
             self._normalize_order_number(number) for number in found_numbers
         }
 
-        return self._normalize_order_number(order_number) in normalized_numbers
+        expected = self._normalize_order_number(order_number)
+        return bool(expected) and expected in normalized_numbers
+
+    @allure.step("Дождаться собственного заказа в секции «Готовы»")
+    def wait_for_order_completed(self, order_number):
+        return self.wait_for_condition(
+            lambda: self._section_contains_order(
+                FeedPageLocators.COMPLETED_SECTION, order_number
+            ),
+            timeout=ORDER_TIMEOUT,
+            poll_frequency=1,
+        )
 
     @allure.step("Дождаться появления заказа в работе")
     def wait_for_order_in_progress(self, order_number):
         return self.wait_for_condition(
-            lambda: self._order_is_in_progress(order_number),
+            lambda: self._section_contains_order(
+                FeedPageLocators.IN_PROGRESS_SECTION, order_number
+            ),
             timeout=ORDER_TIMEOUT,
             poll_frequency=1,
         )
