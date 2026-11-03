@@ -23,4 +23,9 @@ Local verification after the fix (Python 3.13, Windows):
 - PASS: `python -m pytest tests/test_constructor.py -m chrome -q --alluredir=../evidence/ui-local-chrome --clean-alluredir` — 5 passed, 5 deselected, 78 seconds, against the educational stand. This does not validate order-feed scenarios or Firefox.
 - Initial sandboxed browser attempt was BLOCKED at WebDriver startup; the permitted run above completed successfully.
 
-No tests were disabled and timeout values were not increased. Full browser checks are triggered on this PR; their links and conclusions belong in the PR validation record.
+Full local verification subsequently completed:
+
+- PASS: `python -m pytest -m 'chrome or firefox' -q --alluredir=../evidence/ui-full --clean-alluredir` — 16 passed, 5 offline cases deselected, 193.96 seconds, Chrome + Firefox against the educational stand.
+- PASS: [PR CI run 41659320102](https://github.com/Nellie-ai/stellar-burgers-ui-tests/actions/runs/41659320102) — Chrome constructor 5 passed (38.07 seconds), Firefox constructor 5 passed (51.44 seconds), offline regressions 5 passed (0.48 seconds). This Actions run does not cover order-feed scenarios.
+
+No tests were disabled and timeout values were not increased. The full E2E workflow now includes a PR trigger; the observed Actions result above covers constructor + offline checks only. A successful local run does not establish that historical network instability is resolved.
